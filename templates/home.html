@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Debate Table</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">    
+    </head>
+    <body>
+        <header>
+            <h1 id="Title">DEBATE TABLE</h1>
+        </header>
+        <div class="main_viewport">
+            <div class="navigator">
+                <div id = "Home"><p class="navigator_labels">Home</p></div>
+                <div id = "Featured"><p class="navigator_labels">Featured</p></div>
+                <div id = "Popular"><p class="navigator_labels">Popular</p></div>
+                <div id = "New"><p class="navigator_labels">New</p></div>
+                <div id = "Hot"><p class="navigator_labels">Hot</p></div>
+                <div id = "Controversial"><p class="navigator_labels">Controversial</p></div>
+                <div id = "Login" class="accounts hidden"><p class="navigator_labels">Login</p></div>
+                <div id = "Logout" class="accounts hidden"><p class="navigator_labels">Logout</p></div>
+            </div>
+            <div class="Page">
+                <h2>Hello</h2>
+                <p>Nice to have you here today!</p>
+            </div>
+        </div>
+        <footer>
+            <p>&copy; 2024 Debate Table</p>
+        </footer>
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    </body>
+</html>

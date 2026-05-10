@@ -1,0 +1,62 @@
+<div class="topic-window">
+    <div class="topic-main">
+        <div class="topic-header">
+            <h3 class="topic-title">Topic Title</h3>
+            <p class="topic-author">Author Name</p>
+        </div>
+        <div class="claim-footer">
+            <div class="button back-button">BACK</div>
+            <div class="button reply-button">REPLY</div>
+        </div>
+    </div>
+    <div class="claim-container">
+        <div class = "container reactive" id="col1">claims</div>
+        <div class = "container reactive" id="col2">claims</div>
+        <div class = "container reactive" id="col3">claims</div>
+        <div class = "container hidden" id="reply-creator">
+            <div class="create-topic-container" id="reply-creator-container">
+                <div class="create-topic-header">
+                    <h2 id="create-reply-label">Your Reply</h2>
+                </div>
+                <div class="topic-description-field">
+                    <textarea id="reply-description" placeholder="Enter reply description here..."></textarea>
+                </div>
+                <div class="reply-relation-group">
+                    <div class="button relation-button" data-rel-type="1">
+                        Evidence
+                    </div>
+
+                    <div class="button relation-button" data-rel-type="2">
+                        Support
+                    </div>
+
+                    <div class="button relation-button" data-rel-type="3">
+                        Rebuttal
+                    </div>
+                </div>
+                <div class="topic-button-group">
+                    <div class="button" id="create-reply-button">
+                        Publish Reply
+                    </div>
+                    <div class="button" id="cancel-reply-button">
+                        Cancel
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <template id="reply-template">
+        <div class="topic-card reply-card">
+            <div class="topic-header">
+                <h3 class="topic-title">Topic Title</h3>
+                <p class="topic-author">Author Name</p>
+            </div>
+            <div class="topic-footer">
+                <div class="button view-button">VIEW</div>
+                <div class="button reply-button">REPLY</div>
+            </div>
+        </div>
+    </template>
+
+</div>
