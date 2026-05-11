@@ -130,8 +130,25 @@ def get_topics():
 def load_topic():
     return render_template('sections/topic.html')
 
+# @app.route('/topic/<int:topic_id>', methods=['GET'])
+# def view_topic(topic_id):
+#     with sqlite3.connect(DATABASE) as conn:
+#         cursor = conn.cursor()
+#         cursor.execute("SELECT topicName, postingUser FROM topic WHERE topicID = ?", (topic_id,))
+#         row = cursor.fetchone()
+#         if not row:
+#             return jsonify({"error": "Topic not found."}), 404
+#         topic = {"topicName": row[0], "userName": row[1]}
+#         cursor.execute("SELECT claimID, postingUser, text FROM claim WHERE topic = ? AND claimID NOT IN (SELECT second FROM claimToClaim);", (topic_id,))
+#         claims = [{"claimID": claim[0], "userName": claim[1], "text": claim[2]} for claim in cursor.fetchall()]
+#     return jsonify({"topic": topic, "claims": claims})
+
 @app.route('/topic/<int:topic_id>', methods=['GET'])
 def view_topic(topic_id):
+    return render_template('home.html')
+
+@app.route('/api/topic/<int:topic_id>', methods=['GET'])
+def api_view_topic(topic_id):
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT topicName, postingUser FROM topic WHERE topicID = ?", (topic_id,))
@@ -141,6 +158,7 @@ def view_topic(topic_id):
         topic = {"topicName": row[0], "userName": row[1]}
         cursor.execute("SELECT claimID, postingUser, text FROM claim WHERE topic = ? AND claimID NOT IN (SELECT second FROM claimToClaim);", (topic_id,))
         claims = [{"claimID": claim[0], "userName": claim[1], "text": claim[2]} for claim in cursor.fetchall()]
+    # print(claims)
     return jsonify({"topic": topic, "claims": claims})
 
 @app.route('/section/Home/CreateTopic')
@@ -547,8 +565,85 @@ def back_reply(reply_id):
 
         return jsonify({"error": "Claim not found"}), 404
 
+# @app.route('/claim/<int:claim_id>', methods=['GET'])
+# def view_claim(claim_id):
+#     with sqlite3.connect(DATABASE) as conn:
+#         cursor = conn.cursor()
+
+#         # Main claim
+#         cursor.execute("""
+#             SELECT claimID, topic, postingUser, text
+#             FROM claim
+#             WHERE claimID = ?
+#         """, (claim_id,))
+#         row = cursor.fetchone()
+
+#         if not row:
+#             return jsonify({"error": "Claim not found."}), 404
+
+#         claim = {
+#             "claimID": row[0],
+#             "topicID": row[1],
+#             "userName": row[2],
+#             "text": row[3]
+#         }
+
+#         topicID = row[1]
+
+#         cursor.execute("""
+#             SELECT claim.claimID, claim.postingUser, claim.text, claimToClaim.claimRelType
+#             FROM claim
+#             INNER JOIN claimToClaim
+#                 ON claim.claimID = claimToClaim.second
+#             WHERE claim.topic = ?
+#             AND claimToClaim.first = ?;
+#                     """, (topicID, claim_id))
+
+#         related_claims = [
+#             {
+#                 "claimID": related[0],
+#                 "userName": related[1],
+#                 "text": related[2],
+#                 "relationType": related[3]
+#             }
+#             for related in cursor.fetchall()
+#         ]
+
+#         cursor.execute("""
+#             SELECT replyText.replyTextID, replyText.postingUser, replyText.text, replyToClaim.replyToClaimRelType
+#             FROM replyText
+#             JOIN replyToClaim
+#             ON replyText.replyTextID = replyToClaim.reply
+#             WHERE replyToClaim.claim = ?
+#         """, (claim_id,))
+
+#         replies = [
+#             {
+#                 "replyID": reply[0],
+#                 "userName": reply[1],
+#                 "text": reply[2],
+#                 "relationType": reply[3]
+#             }
+#             for reply in cursor.fetchall()
+#         ]
+
+
+#         # for claims in related_claims:
+#         #     print(claims)
+
+        
+#     return jsonify({
+#         "claim": claim,
+#         "relatedClaims": related_claims,
+#         "replies": replies
+#     })
+
 @app.route('/claim/<int:claim_id>', methods=['GET'])
 def view_claim(claim_id):
+    return render_template('home.html')
+
+@app.route('/api/claim/<int:claim_id>', methods=['GET'])
+def api_view_claim(claim_id):
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
 
@@ -620,8 +715,53 @@ def view_claim(claim_id):
         "replies": replies
     })
 
+
+# @app.route('/reply/<int:reply_id>', methods=['GET'])
+# def view_reply(reply_id):
+#     with sqlite3.connect(DATABASE) as conn:
+#         cursor = conn.cursor()
+        
+#         cursor.execute("""
+#             SELECT postingUser, text
+#             FROM replyText
+#             WHERE replyTextID = ?
+#         """, (reply_id,))
+
+#         row = cursor.fetchone()
+#         reply = {
+#             "userName": row[0],
+#             "text": row[1]
+#         }
+
+#         cursor.execute("""
+#             SELECT replyText.replyTextID, replyText.postingUser, replyText.text, replyToReply.replyToReplyRelType
+#             FROM replyText
+#             JOIN replyToReply
+#             ON replyText.replyTextID = replyToReply.reply
+#             WHERE replyToReply.parent = ?
+#         """, (reply_id,))
+
+#         related_replies = [
+#             {
+#                 "replyID": reply[0],
+#                 "userName": reply[1],
+#                 "text": reply[2],
+#                 "relationType": reply[3]
+#             }
+#             for reply in cursor.fetchall()
+#         ]
+
+#     return jsonify({
+#         "reply": reply,
+#         "relatedReplies": related_replies
+#     })
+
 @app.route('/reply/<int:reply_id>', methods=['GET'])
 def view_reply(reply_id):
+    return render_template('home.html')
+
+@app.route('/api/reply/<int:reply_id>', methods=['GET'])
+def api_view_reply(reply_id):
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
         
@@ -659,7 +799,6 @@ def view_reply(reply_id):
         "reply": reply,
         "relatedReplies": related_replies
     })
-
 
 
 @app.route('/section/<section_name>')

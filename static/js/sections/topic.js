@@ -7,12 +7,12 @@ function initTopic() {
         const claimButton = card.querySelector('.claim-button');
         const replyButton = card.querySelector('.reply-button');
 
-        if (viewButton) {
-            viewButton.addEventListener('click', () => {
-                window.terminalLog("view claim clicked");
-                loadClaim(claimID);
-            });
-        }
+        // if (viewButton) {
+        //     viewButton.addEventListener('click', () => {
+        //         window.terminalLog("view claim clicked");
+        //         loadClaim(claimID);
+        //     });
+        // }
         if (claimButton) {
             claimButton.addEventListener('click', () => {
                 loadClaim(claimID);
