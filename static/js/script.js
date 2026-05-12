@@ -85,6 +85,7 @@ console.log("hello");
 
 document.addEventListener("DOMContentLoaded", () => {
     checkSessionStatus();
+    setupAuthOverlay();
     setupNavigator();
 
     window.addEventListener("popstate", () => {
@@ -97,6 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function checkSessionStatus() {
     const loginDiv = document.getElementById("Login");
     const logoutDiv = document.getElementById("Logout");
+    const userGreeting = document.getElementById("user-greeting");
 
     fetch("/session/status")
         .then(response => response.json())
@@ -104,16 +106,180 @@ function checkSessionStatus() {
             if (data.loggedIn) {
                 loginDiv.classList.add("hidden");
                 logoutDiv.classList.remove("hidden");
+
+                userGreeting.textContent = `${data.user}`;
+                userGreeting.classList.remove("hidden");
             } else {
                 loginDiv.classList.remove("hidden");
                 logoutDiv.classList.add("hidden");
+
+                userGreeting.textContent = "";
+                userGreeting.classList.add("hidden");
             }
         })
         .catch(error => {
             console.error("Error checking session:", error);
             loginDiv.classList.remove("hidden");
             logoutDiv.classList.add("hidden");
+            userGreeting.textContent = "";
+            userGreeting.classList.add("hidden");
         });
+}
+
+function setupAuthOverlay() {
+    const loginDiv = document.getElementById("Login");
+    const logoutDiv = document.getElementById("Logout");
+
+    const authOverlay = document.getElementById("auth-overlay");
+    const authClose = document.getElementById("auth-close");
+    const authForm = document.getElementById("auth-form");
+    const authTitle = document.getElementById("auth-title");
+    const authSubmit = document.getElementById("auth-submit");
+    const authSwitch = document.getElementById("auth-switch");
+    const authMessage = document.getElementById("auth-message");
+
+    const usernameInput = document.getElementById("auth-username");
+    const passwordInput = document.getElementById("auth-password");
+    const togglePassword = document.getElementById("toggle-password");
+
+    let authMode = "login";
+
+    togglePassword.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePassword.textContent = "HIDE";
+        } else {
+            passwordInput.type = "password";
+            togglePassword.textContent = "SHOW";
+        }
+    });
+
+    function openAuthOverlay(mode = "login") {
+        authMode = mode;
+        authMessage.textContent = "";
+
+        if (authMode === "login") {
+            authTitle.textContent = "LOGIN";
+            authSubmit.textContent = "LOGIN";
+            authSwitch.textContent = "Need an account? Register";
+        } else {
+            authTitle.textContent = "REGISTER";
+            authSubmit.textContent = "REGISTER";
+            authSwitch.textContent = "Already have an account? Log in";
+        }
+
+        authOverlay.classList.remove("hidden");
+        usernameInput.focus();
+    }
+
+    function closeAuthOverlay() {
+        authOverlay.classList.add("hidden");
+        authForm.reset();
+        authMessage.textContent = "";
+    }
+
+    loginDiv.addEventListener("click", () => {
+        openAuthOverlay("login");
+    });
+
+    logoutDiv.addEventListener("click", () => {
+        fetch("/section/Logout", {
+            method: "POST",
+            credentials: "include"
+        })
+            .then(() => {
+                checkSessionStatus();
+            })
+            .catch(error => {
+                console.error("Logout failed:", error);
+            });
+    });
+
+    authClose.addEventListener("click", closeAuthOverlay);
+
+    authOverlay.addEventListener("click", event => {
+        if (event.target === authOverlay) {
+            closeAuthOverlay();
+        }
+    });
+
+    authSwitch.addEventListener("click", () => {
+        openAuthOverlay(authMode === "login" ? "register" : "login");
+    });
+
+    authForm.addEventListener("submit", event => {
+        event.preventDefault();
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!username || !password) {
+            authMessage.textContent = "Please fill in both username and password.";
+            return;
+        }
+
+        const endpoint = authMode === "login"
+            ? "/section/Login"
+            : "/section/Register";
+
+        fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                userName: username,
+                passwordHash: password
+            })
+        })
+            .then(response => {
+                return response.json().then(data => ({
+                    ok: response.ok,
+                    data
+                }));
+            })
+            .then(result => {
+                if (!result.ok) {
+                    authMessage.textContent = result.data.error || "Something went wrong.";
+                    return;
+                }
+
+                if (authMode === "register") {
+                    authMessage.textContent = "Registered successfully. Logging you in...";
+
+                    return fetch("/section/Login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        credentials: "include",
+                        body: JSON.stringify({
+                            userName: username,
+                            passwordHash: password
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(() => {
+                            checkSessionStatus();
+                            closeAuthOverlay();
+                        });
+                }
+
+                checkSessionStatus();
+                closeAuthOverlay();
+            })
+            .catch(error => {
+                console.error("Authentication error:", error);
+                authMessage.textContent = "An error occurred. Please try again.";
+            });
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            closeAuthOverlay();
+        }
+    });
 }
 
 function setupNavigator() {
@@ -122,6 +288,11 @@ function setupNavigator() {
     navigatorDivs.forEach(div => {
         div.addEventListener("click", () => {
             const section = div.id;
+
+            if (section === "Login" || section === "Logout") {
+                return;
+            }
+
             console.log(section + " clicked");
 
             loadSection(section);

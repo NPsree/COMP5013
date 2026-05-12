@@ -100,7 +100,6 @@ def login():
             if cursor.rowcount == 0:
                 return jsonify({"error": "Invalid username or password."}), 401
             session['user']= userName
-            print(userName)
             print(session['user'])
             conn.commit()
             return jsonify({"message": "Login successful!"}), 200
