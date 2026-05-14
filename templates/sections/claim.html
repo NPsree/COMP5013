@@ -11,8 +11,17 @@
         </div>
     </div>
     <div class="claim-container">
-        <div class = "container reactive" id="col1">claims</div>
-        <div class = "container reactive" id="col2">claims</div>
+        <!-- <div class = "container reactive" id="col1">claims</div>
+        <div class = "container reactive" id="col2">claims</div> -->
+        <div class="container reactive relation-column opposed-column" id="col1">
+            <div class="column-label">OPPOSED</div>
+            <div class="column-cards"></div>
+        </div>
+
+        <div class="container reactive relation-column equivalent-column" id="col2">
+            <div class="column-label">EQUIVALENT</div>
+            <div class="column-cards"></div>
+        </div>
         <div class = "container hidden" id="claim-creator">
             <div class="create-topic-container" id="claim-creator-container">
                 <div class="create-topic-header">
@@ -73,9 +82,23 @@
         </div>
     </div>
     <div class="reply-container">
-        <div class = "container reactive" id="reply-col1">replies</div>
+        <!-- <div class = "container reactive" id="reply-col1">replies</div>
         <div class = "container reactive" id="reply-col2">replies</div>
-        <div class = "container reactive" id="reply-col3">replies</div>
+        <div class = "container reactive" id="reply-col3">replies</div> -->
+        <div class="container reactive relation-column clarification-column" id="reply-col1">
+            <div class="column-label">CLARIFICATION</div>
+            <div class="column-cards"></div>
+        </div>
+
+        <div class="container reactive relation-column supporting-column" id="reply-col2">
+            <div class="column-label">SUPPORTING ARGUMENT</div>
+            <div class="column-cards"></div>
+        </div>
+
+        <div class="container reactive relation-column counter-column" id="reply-col3">
+            <div class="column-label">COUNTERARGUMENT</div>
+            <div class="column-cards"></div>
+        </div>
     </div>
 
     <template id="topic-template">

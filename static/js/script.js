@@ -486,11 +486,17 @@ function viewClaim(claimID) {
             document.querySelector('.topic-author').textContent = `By ${data.claim.userName}`;
             document.querySelector('.topic-window').id = data.claim.claimID;
 
-            const col1 = document.getElementById("col1");
-            const col2 = document.getElementById("col2");
-            const replycol1 = document.getElementById("reply-col1");
-            const replycol2 = document.getElementById("reply-col2");
-            const replycol3 = document.getElementById("reply-col3");
+            // const col1 = document.getElementById("col1");
+            // const col2 = document.getElementById("col2");
+            // const replycol1 = document.getElementById("reply-col1");
+            // const replycol2 = document.getElementById("reply-col2");
+            // const replycol3 = document.getElementById("reply-col3");
+            const col1 = document.querySelector("#col1 .column-cards");
+            const col2 = document.querySelector("#col2 .column-cards");
+            const replycol1 = document.querySelector("#reply-col1 .column-cards");
+            const replycol2 = document.querySelector("#reply-col2 .column-cards");
+            const replycol3 = document.querySelector("#reply-col3 .column-cards");
+
             col1.innerHTML = "";
             col2.innerHTML = "";
             replycol1.innerHTML = "";
@@ -513,7 +519,14 @@ function viewClaim(claimID) {
                         claimCard.classList.add("equivalent");
                         break;
                 }
-                const column = index % 2 === 0 ? col1 : col2;
+                // const column = index % 2 === 0 ? col1 : col2;
+                // column.appendChild(claimElement);
+                const claimColumns = {
+                    1: col1, // Opposed
+                    2: col2  // Equivalent
+                };
+
+                const column = claimColumns[Number(claim.relationType)];
                 column.appendChild(claimElement);
             });
 
@@ -536,7 +549,15 @@ function viewClaim(claimID) {
                         replyCard.classList.add("counterargument");
                         break;
                 }
-                const column = index % 3 === 0 ? replycol1 : index % 3 === 1 ? replycol2 : replycol3;
+                // const column = index % 3 === 0 ? replycol1 : index % 3 === 1 ? replycol2 : replycol3;
+                // column.appendChild(replyElement);
+                const replyColumns = {
+                    1: replycol1, // Clarification
+                    2: replycol2, // Supporting Argument
+                    3: replycol3  // Counterargument
+                };
+
+                const column = replyColumns[Number(reply.relationType)];
                 column.appendChild(replyElement);
             });
 
@@ -596,9 +617,12 @@ function viewReply(replyID) {
             document.querySelector('.topic-author').textContent = 'By ' + data.reply.userName;
             document.querySelector('.topic-window').id = replyID;
 
-            const col1 = document.getElementById("col1");
-            const col2 = document.getElementById("col2");
-            const col3 = document.getElementById("col3");
+            // const col1 = document.getElementById("col1");
+            // const col2 = document.getElementById("col2");
+            // const col3 = document.getElementById("col3");
+            const col1 = document.querySelector("#col1 .column-cards");
+            const col2 = document.querySelector("#col2 .column-cards");
+            const col3 = document.querySelector("#col3 .column-cards");
             col1.innerHTML = "";
             col2.innerHTML = "";
             col3.innerHTML = "";
@@ -622,7 +646,15 @@ function viewReply(replyID) {
                         replyCard.classList.add("rebuttal");
                         break;
                 }
-                const column = index % 3 === 0 ? col1 : index % 3 === 1 ? col2 : col3;
+                // const column = index % 3 === 0 ? col1 : index % 3 === 1 ? col2 : col3;
+                // column.appendChild(replyElement);
+                const replyColumns = {
+                    1: col1, // Evidence
+                    2: col2, // Support
+                    3: col3  // Rebuttal
+                };
+
+                const column = replyColumns[Number(reply.relationType)];
                 column.appendChild(replyElement);
             });
 
