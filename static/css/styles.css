@@ -416,12 +416,19 @@ footer {
     transition: all 0.3s ease;
 }
 
-.topic-card .opposed {
-    background-color: #ea00ff;
+.claim-card.opposed {
+    background-color: #12217b;
+}
+.claim-card.opposed:hover {
+    background-color: #12217b;
 }
 
-.topic-card.equivalent {
-    background-color: #6600ff;
+.claim-card.equivalent {    
+    background-color: #657cff;
+}
+
+.claim-card.equivalent:hover {    
+    background-color: #657cff;
 }
 
 .reply-card.clarification {
